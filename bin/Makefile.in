@@ -1,0 +1,25 @@
+TAR = tar
+GZIP = gzip
+PRODUCT = agnes
+BIN = $(PRODUCT).@BASEOS@ 
+DOC = CONTRIBUTIONS COPYRIGHT
+VERSIONHPP =  ../Sources/agnes/bldver.hpp
+VERSIONMAJOR = $(shell cat $(VERSIONHPP) | grep "define RC_VERSION_MAJOR" | sed -e 's/[^0-9]//g')
+VERSIONMINOR = $(shell cat $(VERSIONHPP) | grep "define RC_VERSION_MINOR" | sed -e 's/[^0-9]//g')
+VERSION = $(VERSIONMAJOR).$(VERSIONMINOR)
+TARGET = $(PRODUCT).$(VERSION).@BASEOS@-@BASEPROC@.tar
+TDIR = $(PRODUCT).$(VERSION)
+COPY = cp
+MKDIR = @mkdir -p
+RM = rm
+RMR = $(RM) -r
+
+all:
+	-$(MKDIR) $(TDIR)
+	@for I in $(DOC); do $(COPY) $$I $(TDIR); done
+	$(COPY) $(BIN) $(TDIR)
+	-$(RM) $(TARGET).gz
+	$(TAR) vfc $(TARGET) $(TDIR)/*
+	$(GZIP) $(TARGET)
+	-$(RMR) $(TDIR)
+

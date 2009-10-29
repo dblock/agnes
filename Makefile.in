@@ -1,0 +1,59 @@
+DIRS =                                          \
+		CCookieManager                          \
+		ccontainer                              \
+		cgi_entry                               \
+		cmail                                   \
+		cvector                                 \
+		inetsock                                \
+		recent_class                            \
+		cdate                                   \
+		cgi_equiv                               \
+		cremotefile                             \
+		ext_param                               \
+		mhost                                   \
+		regexp                                  \
+		article_class                           \
+		certif                                  \
+		cgiout                                  \
+		cstring                                 \
+		face_class                              \
+		mozilla                                 \
+		slist                                   \
+		article_manager                         \
+		cgi_access                              \
+		chashtable                              \
+		curl                                    \
+		nextgen                                 \
+		base_entry                              \
+		cgi_admin                               \
+		chttprequest                            \
+		cusermanager                            \
+		html_form                               \
+		platform                                \
+                agnes
+
+DIRSPREFIX = Sources
+PWD = $(shell pwd)
+LIBS = -L $(HOME)/lib -L ./ @LIBS@
+STATIC_LIBS =  
+OBJ = obj
+BIN = bin
+PROG = $(BIN)/agnes.@BASEOS@
+CURDIR = $(shell pwd)
+
+all debug:
+	@for I in $(DIRS); do cd $(PWD)/$(DIRSPREFIX)/$$I; @MAKE@ -f ../../Makefile.each $@ || exit 1; cd $(PWD); done	
+	-@mkdir $(BIN)
+	@GCC@ -D_OS_@BASEOS@ @DEFS@ @CPPFLAGS@ $(INCLUDES) $(LIBS) $(OBJ)/* -o $(PROG) $(STATIC_LIBS)
+	@if test $@ = all; then echo "make: strip $(PROG)" ; strip $(PROG); fi
+
+clean: cleanup all
+
+cleanup:
+	-@rm $(OBJ)/*
+
+distrib: release
+
+release: all
+	cd $(BIN); @MAKE@ ; cd $(PWD);
+
